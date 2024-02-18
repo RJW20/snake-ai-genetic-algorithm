@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "snake-ai-genetic-algorithm"
+name = "snake_ai_genetic_algorithm"
 version = "0.1.0"
 description = "Application of the genetic algorithm to the game Snake."
 authors = ["RJW20"]
@@ -12,9 +12,6 @@ numpy = "^1.26.4"
 pygame = "^2.5.2"
 snake_app = { path = "../snake_app/", develop = true }
 genetic_algorithm = { path = "../genetic_algorithm_template/", develop = true }
-
-[tool.poetry.scripts]
-main = "snake_ai.main:main"
 
 [build-system]
 requires = ["poetry-core"]
