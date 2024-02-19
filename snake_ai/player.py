@@ -52,7 +52,9 @@ class Player(Snake, BasePlayer):
         d['vision'] = self.vision
 
         d['fitness'] = self.fitness
+        d['_fitness'] = self._fitness
         d['best_score'] = self.best_score
+        d['_best_score'] = self._best_score
         d['genome'] = self.genome
         d['is_dead'] = self.is_dead
 
