@@ -9,13 +9,15 @@ class Player(Snake, BasePlayer):
 
     def __init__(self, **kwargs) -> None:
         super(Player, self).__init__(**kwargs)
+        self._fitness = 0
+        self._best_score = 0
 
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""
 
-        genome_input = np.array()
-        for _, vision in vars(self.vision).items():
-            np.concatenate(genome_input, np.array([1.0/distance for __, distance in vars(vision).items]))   #use 1/distance so snake can see infinitely
+        genome_input = np.concatenate((np.array([1.0/distance for _, distance in vars(self.vision.walls).items()]),
+                                       np.array([1.0/distance for _, distance in vars(self.vision.food).items()]),
+                                       np.array([1.0/distance for _, distance in vars(self.vision.body).items()])))
         genome_output = self.genome.propagate(genome_input)
 
         #turn output into move
@@ -51,9 +53,9 @@ class Player(Snake, BasePlayer):
         d['target'] = self.target
         d['vision'] = self.vision
 
-        d['_fitness'] = self._fitness
-        d['_best_score'] = self._best_score
-        d['_genome'] = self._genome
+        d['fitness'] = self.fitness
+        d['best_score'] = self.best_score
+        d['genome'] = self.genome
 
         return d
 
@@ -70,9 +72,9 @@ class Player(Snake, BasePlayer):
         self.target = d['target']
         self.vision = d['vision']
 
-        self._fitness = d['_fitness']
-        self._best_score = d['_best_score']
-        self._genome = d['_genome']
+        self.fitness = d['fitness']
+        self.best_score = d['best_score']
+        self.genome = d['genome']
 
     def empty_clone(self) -> BasePlayer:
         """Return a new instance of self's class without a genome."""

@@ -9,15 +9,11 @@ from .simulator import simulate
 
 def main() -> None:
 
-    print('started')
-
     #initialize the population of players
     creation_type = genetic_algorithm_settings['creation_type']
     population_size = genetic_algorithm_settings['population_size']
     players = [Player(**player_args) for _ in range(population_size)]
     population = Population(population_size, players, 1)
-
-    print('initialized population')
 
     #pull out some settings
     parent_percentage = genetic_algorithm_settings['parent_percentage']
@@ -36,26 +32,19 @@ def main() -> None:
             population.load(load_folder)
             population.repopulate(crossover_type, mutation_type, mutation_rate)
 
-    print(f'added brains to population via method {creation_type}')
-
     #evolve
     total_generations = genetic_algorithm_settings['total_generations']
     while population.current_generation < total_generations:
 
-        print(f'starting to simulate gen {population.current_generation}')
 
         #run the players with multiprocessing
-        with Pool(1) as pool:
+        with Pool(2) as pool:
             population.players = pool.map(simulate, population.players, chunksize=1)
 
-        print('finished simulation of population')
-        print(population.current_generation)
-        print(population.size)
-        print(population.champ.fitness)
-
         #print some stats
-        print(f'\ngeneration: {population.current_generation}, best fitness: {round(population.champ.fitness)}, average fitness: {round(population.average_fitness)}, ', end = '')
-
+        print(f'\ngeneration: {population.current_generation}, champ\'s best score: {population.champ.best_score}, ' + 
+              f'best fitness: {round(population.champ.fitness)}, average fitness: {round(population.average_fitness)}, ', end = '')
+        
         #remove the poorly perfoming players and report the improvements
         population.cull(parent_percentage)
         print(f'average parent fitness: {round(population.average_fitness)}\n')
@@ -63,6 +52,9 @@ def main() -> None:
         #save the progress
         population.champ.genome.save(file_name=population.current_generation, folder_name='champs')
         population.save(save_folder)
+
+        print('Not implemented player.empty_clone, exitting')
+        exit()
 
         #repopulate in preparation to repeat
         population.repopulate(crossover_type, mutation_type, mutation_rate)

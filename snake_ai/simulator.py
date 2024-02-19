@@ -12,7 +12,7 @@ def calculate_fitness(left_count: int, right_count: int, forward_count: int, tot
     if min(left_count, right_count, forward_count) == 0:
         return .0
     
-    age = sum(left_count + right_count + forward_count)
+    age = left_count + right_count + forward_count
     adjusted_age = age // ((longest_edge / 10) * lifespan)
     adjusted_score = total_score / lifespan
 
@@ -34,6 +34,7 @@ def simulate(player: Player) -> Player:
     left_count = right_count = forward_count = total_score = 0
     longest_edge = max(player.grid_size)
     initial_length = player.length
+    best_score = 0
 
     lifespan = simulation_settings['lifespan']
     deaths = 0
@@ -66,10 +67,14 @@ def simulate(player: Player) -> Player:
         if player.is_dead or time_since_eaten == M * longest_edge:
             deaths += 1
             score = player.length - initial_length
+            best_score = max(best_score, score)
             total_score += score
             if deaths < lifespan:
                 player.restart(score)
                 current_length = player.length
+                time_since_eaten = 0
+        
+    player.best_score = best_score
 
     player.fitness = calculate_fitness(left_count=left_count, right_count=right_count, forward_count=forward_count, total_score=total_score, longest_edge=longest_edge, lifespan=lifespan)
     return player
