@@ -42,7 +42,21 @@ class Player(Snake, BasePlayer):
         If this class uses __slots__ or extends one that does this must be changed.
         """
 
-        return self.__dict__
+        d = dict()
+
+        d['grid_size'] = self.grid_size
+        d['body'] = self.body
+        d['length'] = self.length
+        d['direcion'] = self.direction
+        d['target'] = self.target
+        d['vision'] = self.vision
+
+        d['fitness'] = self.fitness
+        d['best_score'] = self.best_score
+        d['genome'] = self.genome
+        d['is_dead'] = self.is_dead
+
+        return d
 
     def __setstate__(self, d: dict) -> BasePlayer:
         """Load the attributes in the dictionary d into self.
@@ -50,7 +64,17 @@ class Player(Snake, BasePlayer):
         If this class uses __slots__ or extends one that does this must be changed.
         """
 
-        self.__dict__ = d
+        self.grid_size = d['grid_size']
+        self.body = d['body']
+        self.length = d['length']
+        self.direction = d['direcion']
+        self.target = d['target']
+        self.vision = d['vision']
+
+        self.fitness = d['fitness']
+        self.best_score = d['best_score']
+        self.genome = d['genome']
+        self.is_dead = d['is_dead']
 
     def empty_clone(self) -> BasePlayer:
         """Return a new instance of self's class without a genome."""
