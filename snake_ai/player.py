@@ -33,12 +33,6 @@ class Player(Snake, BasePlayer):
         
         return move
     
-    def restart(self, score: int) -> None:
-        """Return the state to the beginning of a game."""
-
-        self.length  = self.length - score
-        self.start_state()
-
     def __getstate__(self) -> dict:
         """Return a dictionary containing attribute names and their values as (key, value) pairs.
         
@@ -49,8 +43,8 @@ class Player(Snake, BasePlayer):
         d = dict()
 
         d['grid_size'] = self.grid_size
+        d['start_length'] = self.start_length
         d['body'] = self.body
-        d['length'] = self.length
         d['direcion'] = self.direction
         d['target'] = self.target
         d['vision'] = self.vision
@@ -68,8 +62,8 @@ class Player(Snake, BasePlayer):
         """
 
         self.grid_size = d['grid_size']
+        self.start_length = d['start_length']
         self.body = d['body']
-        self.length = d['length']
         self.direction = d['direcion']
         self.target = d['target']
         self.vision = d['vision']

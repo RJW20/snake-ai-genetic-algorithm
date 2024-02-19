@@ -53,10 +53,7 @@ def main() -> None:
         population.champ.genome.save(file_name=population.current_generation, folder_name='champs')
         population.save(save_folder)
 
-        print('Not implemented player.empty_clone, exitting')
-        exit()
-
         #repopulate in preparation to repeat
         population.repopulate(crossover_type, mutation_type, mutation_rate)
 
-
+        print('done')
