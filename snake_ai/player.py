@@ -51,13 +51,9 @@ class Player(Snake, BasePlayer):
         d['target'] = self.target
         d['vision'] = self.vision
 
-        d['fitness'] = self.fitness
         d['_fitness'] = self._fitness
-        d['best_score'] = self._best_score
         d['_best_score'] = self._best_score
-        d['genome'] = self.genome
         d['_genome'] = self._genome
-        d['is_dead'] = self.is_dead
 
         return d
 
@@ -74,13 +70,9 @@ class Player(Snake, BasePlayer):
         self.target = d['target']
         self.vision = d['vision']
 
-        self.fitness = d['fitness']
         self._fitness = d['_fitness']
-        self.best_score = d['best_score']
         self._best_score = d['_best_score']
-        self.genome = d['genome']
         self._genome = d['_genome']
-        self.is_dead = d['is_dead']
 
     def empty_clone(self) -> BasePlayer:
         """Return a new instance of self's class without a genome."""
