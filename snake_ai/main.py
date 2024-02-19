@@ -1,7 +1,7 @@
 from multiprocessing import Pool
 
 from genetic_algorithm import Population
-from snake_ai.player import Player
+from player import Player
 from settings import player_args
 from settings import genetic_algorithm_settings
 from simulator import simulate

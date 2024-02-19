@@ -19,6 +19,7 @@ def simulate(player: Player) -> Player:
     """
 
     stats = dict()
+    simulation_settings
 
     '''
     while not player.is_dead:
