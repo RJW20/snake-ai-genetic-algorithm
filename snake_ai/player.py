@@ -1,7 +1,9 @@
-from snake_app import Snake
-from genetic_algorithm import BasePlayer
+from copy import deepcopy
 
 import numpy as np
+
+from snake_app import Snake
+from genetic_algorithm import BasePlayer
 
 
 class Player(Snake, BasePlayer):
@@ -78,4 +80,10 @@ class Player(Snake, BasePlayer):
 
     def empty_clone(self) -> BasePlayer:
         """Return a new instance of self's class without a genome."""
+
+        clone = deepcopy(self)
+        clone.fitness = 0
+        clone.best_score = 0
+        clone.genome = None
+        
         pass
