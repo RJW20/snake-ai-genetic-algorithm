@@ -9,11 +9,22 @@ from .simulator import simulate
 
 def main() -> None:
 
+    print('started')
+
     #initialize the population of players
     creation_type = genetic_algorithm_settings['creation_type']
     population_size = genetic_algorithm_settings['population_size']
     players = [Player(**player_args) for _ in range(population_size)]
     population = Population(population_size, players, 1)
+
+    print('initialized population')
+
+    #pull out some settings
+    parent_percentage = genetic_algorithm_settings['parent_percentage']
+    crossover_type = genetic_algorithm_settings['crossover_type']
+    mutation_type = genetic_algorithm_settings['mutation_type']
+    mutation_rate = genetic_algorithm_settings['mutation_rate']
+    save_folder = genetic_algorithm_settings['save_folder']
 
     #add their Genomes
     match(creation_type):
@@ -23,20 +34,24 @@ def main() -> None:
         case 'load':
             load_folder = genetic_algorithm_settings['load_folder']
             population.load(load_folder)
+            population.repopulate(crossover_type, mutation_type, mutation_rate)
 
-    #pull out some settings
-    parent_percentage = genetic_algorithm_settings['parent_percentage']
-    crossover_type = genetic_algorithm_settings['crossover_type']
-    mutation_type = genetic_algorithm_settings['mutation_type']
-    mutation_rate = genetic_algorithm_settings['mutation_rate']
+    print(f'added brains to population via method {creation_type}')
 
     #evolve
     total_generations = genetic_algorithm_settings['total_generations']
     while population.current_generation < total_generations:
 
+        print(f'starting to simulate gen {population.current_generation}')
+
         #run the players with multiprocessing
-        with Pool() as pool:
-            population.players = pool.imap_unordered(simulate, population.players, chunksize=1)
+        with Pool(1) as pool:
+            population.players = pool.map(simulate, population.players, chunksize=1)
+
+        print('finished simulation of population')
+        print(population.current_generation)
+        print(population.size)
+        print(population.champ.fitness)
 
         #print some stats
         print(f'\ngeneration: {population.current_generation}, best fitness: {round(population.champ.fitness)}, average fitness: {round(population.average_fitness)}, ', end = '')
@@ -47,7 +62,7 @@ def main() -> None:
 
         #save the progress
         population.champ.genome.save(file_name=population.current_generation, folder_name='champs')
-        population.save('latest population')
+        population.save(save_folder)
 
         #repopulate in preparation to repeat
         population.repopulate(crossover_type, mutation_type, mutation_rate)

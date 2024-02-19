@@ -1,3 +1,5 @@
+import sys
+
 from .player import Player
 from .settings import simulation_settings
 
@@ -8,15 +10,18 @@ def calculate_fitness(**stats: dict) -> float:
     This will be a function of stats.
     """
     
-    return .0
+    return .1
 
 
 def simulate(player: Player) -> Player:
     """Assign the player its fitness.
     
-    Run the player in its environment dependent on runner settings.
+    Run the player in its environment dependent on simulation_settings.
     Collect stats and then calculate the fitness of the player and assign it.
     """
+
+    print('simulating')
+    sys.stdout.flush()  #remove import sys when done here
 
     stats = dict()
     simulation_settings
