@@ -10,8 +10,8 @@ readme = "README.md"
 python = "^3.12"
 numpy = "^1.26.4"
 pygame = "^2.5.2"
-snake_app = { path = "../snake_app/", develop = true }
-genetic_algorithm = { path = "../genetic_algorithm_template/", develop = true }
+snake_app = { path = "snake_app/", develop = true }
+genetic_algorithm = { path = "genetic_algorithm_template/", develop = true }
 
 [build-system]
 requires = ["poetry-core"]
