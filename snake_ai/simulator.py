@@ -17,14 +17,17 @@ def simulate(player: Player) -> Player:
     Run the player in its environment dependent on runner settings.
     Collect stats and then calculate the fitness of the player and assign it.
     """
+
     stats = dict()
 
+    '''
     while not player.is_dead:
         player.look()
         move = player.think()
         player.move(move)
 
         #edit stats after each move
+    '''
 
     player.fitness = calculate_fitness(**stats)
     return player
