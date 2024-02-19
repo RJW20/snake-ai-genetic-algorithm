@@ -85,5 +85,5 @@ class Player(Snake, BasePlayer):
         clone.fitness = 0
         clone.best_score = 0
         clone.genome = None
-        
-        pass
+
+        return clone
