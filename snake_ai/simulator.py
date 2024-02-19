@@ -8,7 +8,6 @@ def calculate_fitness(left_count: int, right_count: int, forward_count: int, tot
     This will be a function of stats.
     """
 
-    '''
     #blackist any players that are only turning in one direction
     if min(left_count, right_count, forward_count) == 0:
         return .0
@@ -23,9 +22,6 @@ def calculate_fitness(left_count: int, right_count: int, forward_count: int, tot
     fitness = max(fitness, .0)
     
     return fitness
-    '''
-
-    return .1
 
 
 def simulate(player: Player) -> Player:

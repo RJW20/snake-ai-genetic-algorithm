@@ -55,5 +55,3 @@ def main() -> None:
 
         #repopulate in preparation to repeat
         population.repopulate(crossover_type, mutation_type, mutation_rate)
-
-        print('done')
