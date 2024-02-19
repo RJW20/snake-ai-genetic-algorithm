@@ -1,16 +1,27 @@
-import sys
-
 from .player import Player
 from .settings import simulation_settings
 
 
-def calculate_fitness(**stats: dict) -> float:
+def calculate_fitness(left_count: int, right_count: int, forward_count: int, total_score: int, longest_edge: int, lifespan: int) -> float:
     """Return a value determining how 'good' a player is.
     
     This will be a function of stats.
     """
+
+    #blackist any players that are only turning in one direction
+    if min(left_count, right_count, forward_count) == 0:
+        return .0
     
-    return .1
+    age = sum(left_count + right_count + forward_count)
+    adjusted_age = age // ((longest_edge / 10) * lifespan)
+    adjusted_score = total_score / lifespan
+
+    fitness = adjusted_age + ((2**adjusted_score) + (adjusted_score**2.1)*500) - (((.25 * adjusted_age)**1.3) * (adjusted_score**1.2))
+    
+    #blacklist any players doing too badly
+    fitness = max(fitness, .0)
+    
+    return fitness
 
 
 def simulate(player: Player) -> Player:
@@ -20,20 +31,47 @@ def simulate(player: Player) -> Player:
     Collect stats and then calculate the fitness of the player and assign it.
     """
 
-    print('simulating')
-    sys.stdout.flush()  #remove import sys when done here
+    left_count = right_count = forward_count = total_score = 0
+    longest_edge = max(player.grid_size)
+    initial_length = player.length
 
-    stats = dict()
-    simulation_settings
+    lifespan = simulation_settings['lifespan']
+    deaths = 0
+    time_since_eaten = 0
+    current_length = player.length
+    while deaths < lifespan:
 
-    '''
-    while not player.is_dead:
         player.look()
         move = player.think()
         player.move(move)
 
-        #edit stats after each move
-    '''
+        #edit move counters
+        match(move):
+            case 'left':
+                left_count += 1
+            case 'right':
+                right_count += 1
+            case 'forward':
+                forward_count += 1
 
-    player.fitness = calculate_fitness(**stats)
+        #increase time_since_eaten
+        if player.length == current_length:
+            time_since_eaten += 1
+        else:
+            time_since_eaten = 0
+            current_length = player.length
+        
+        #restart if needed
+        M = max(6, min(player.length, longest_edge))   #variable for determining progress     
+        if player.is_dead or time_since_eaten == M * longest_edge:
+            deaths += 1
+            score = player.length - initial_length
+            total_score += score
+            if deaths < lifespan:
+                player.restart(score)
+                current_length = player.length
+
+    player.fitness = calculate_fitness(left_count=left_count, right_count=right_count, forward_count=forward_count, total_score=total_score, longest_edge=longest_edge, lifespan=lifespan)
     return player
+
+

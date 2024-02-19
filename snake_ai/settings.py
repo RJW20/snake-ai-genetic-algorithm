@@ -12,11 +12,11 @@ player_args = {
 genetic_algorithm_settings = {
 
     #population properties
-    'population_size': 100,        #number of players in the population
+    'population_size': 1000,        #number of players in the population
     'creation_type': 'new',         #options are ['new', 'load']
     'load_folder': 'latest_genomes',           #folder to load from if applicable
     'save_folder': 'latest_genomes',              #folder to save to
-    'total_generations': 500,       #number of generations to run to
+    'total_generations': 200,       #number of generations to run to
 
     #genome properties
     'structure': ((24, ), (16, 'sigmoid'), (3, 'softmax')),    #options for activation are ['sigmoid', 'relu', 'softmax', 'linear']
@@ -31,6 +31,8 @@ genetic_algorithm_settings = {
 
 
 simulation_settings = {
+
+    'lifespan': 5,
 
 }
 

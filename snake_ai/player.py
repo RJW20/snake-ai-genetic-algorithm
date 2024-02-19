@@ -28,6 +28,12 @@ class Player(Snake, BasePlayer):
                 move = 'left'
         
         return move
+    
+    def restart(self, score: int) -> None:
+        """Return the state to the beginning of a game."""
+
+        self.length  = self.length - score
+        self.start_state()
 
     def __getstate__(self) -> dict:
         """Return a dictionary containing attribute names and their values as (key, value) pairs.
