@@ -3,10 +3,7 @@ from .settings import simulation_settings
 
 
 def calculate_fitness(left_count: int, right_count: int, forward_count: int, total_score: int, longest_edge: int, lifespan: int) -> float:
-    """Return a value determining how 'good' a player is.
-    
-    This will be a function of stats.
-    """
+    """Return a value determining how 'good' a player is."""
 
     #blackist any players that are only turning in one direction
     if min(left_count, right_count, forward_count) == 0:
@@ -79,5 +76,3 @@ def simulate(player: Player) -> Player:
 
     player.fitness = calculate_fitness(left_count=left_count, right_count=right_count, forward_count=forward_count, total_score=total_score, longest_edge=longest_edge, lifespan=lifespan)
     return player
-
-

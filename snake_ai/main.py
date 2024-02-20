@@ -36,11 +36,10 @@ def main() -> None:
     total_generations = genetic_algorithm_settings['total_generations']
     while population.current_generation < total_generations:
 
-
         #run the players with multiprocessing
         with Pool(2) as pool:
             population.players = pool.map(simulate, population.players, chunksize=1)
-
+        
         #print some stats
         print(f'\ngeneration: {population.current_generation}, champ\'s best score: {population.champ.best_score}, ' + 
               f'best fitness: {round(population.champ.fitness)}, average fitness: {round(population.average_fitness)}, ', end = '')
@@ -50,7 +49,7 @@ def main() -> None:
         print(f'average parent fitness: {round(population.average_fitness)}\n')
 
         #save the progress
-        population.champ.genome.save(file_name=population.current_generation, folder_name='champs')
+        population.champ.genome.save(file_name=f'{population.current_generation}_{population.champ.best_score}', folder_name='champs')
         population.save(save_folder)
 
         #repopulate in preparation to repeat
