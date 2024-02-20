@@ -37,7 +37,7 @@ def simulate(player: Player) -> Player:
     lifespan = simulation_settings['lifespan']
     deaths = 0
     time_since_eaten = 0
-    current_length = player.length
+    current_score = 0
     while deaths < lifespan:
 
         player.look()
@@ -54,22 +54,21 @@ def simulate(player: Player) -> Player:
                 forward_count += 1
 
         #increase time_since_eaten
-        if player.length == current_length:
+        if player.score == current_score:
             time_since_eaten += 1
         else:
             time_since_eaten = 0
-            current_length = player.length
+            current_score = player.score
         
         #restart if needed
         M = max(6, min(player.length, longest_edge))   #variable for determining progress     
         if player.is_dead or time_since_eaten == M * longest_edge:
             deaths += 1
-            score = player.length - player.start_length
-            best_score = max(best_score, score)
-            total_score += score
+            best_score = max(best_score, player.score)
+            total_score += player.score
             if deaths < lifespan:
                 player.start_state()
-                current_length = player.length
+                current_score = player.score
                 time_since_eaten = 0
         
     player.best_score = best_score
