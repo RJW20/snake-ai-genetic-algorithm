@@ -12,16 +12,16 @@ player_args = {
 genetic_algorithm_settings = {
 
     #population properties
-    'population_size': 1000,                       #number of players in the population
+    'population_size': 1000,                    #number of players in the population
     'creation_type': 'new',                     #options are ['new', 'load']
-    'load_folder': 'latest_genomes',            #folder to load from if applicable
-    'save_folder': 'latest_genomes',            #folder to save to
-    'total_generations': 200,                   #number of generations to run to
+    'load_folder': '',                          #folder to load from if applicable
+    'save_folder': 'latest_genomes',            #folder to save parents of each generation to (for use with repopulation, will be overwritten each time)
+    'total_generations': 200,                   #number of generations to run for
 
     #history properties
-    'history_folder': '',           #folder to permanently save the best of each generation too
-    'history_type': '',             #options are ['none', 'champ', 'absolute', 'percentage', 'entire']
-    'history_value': '',            #dependent on history_type: 'absolute' -> int: number to save, 'percentage' -> float: percentage to save 
+    'history_folder': 'history',            #folder to permanently save the best of each generation too
+    'history_type': 'champ',                #options are ['none', 'champ', 'absolute', 'percentage', 'entire']
+    'history_value': 0,                     #dependent on history_type: 'absolute' -> int: number to save, 'percentage' -> float: percentage to save 
 
     #genome properties
     'structure': ((24, ), (16, 'sigmoid'), (3, 'softmax')),    #options for activation are ['sigmoid', 'relu', 'softmax', 'linear']

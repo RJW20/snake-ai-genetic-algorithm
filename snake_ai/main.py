@@ -7,7 +7,7 @@ from .settings import player_args
 
 
 #bind settings to variables
-from settings import genetic_algorithm_settings
+from .settings import genetic_algorithm_settings
 population_size = genetic_algorithm_settings['population_size']
 creation_type = genetic_algorithm_settings['creation_type']
 load_folder = genetic_algorithm_settings['load_folder']
@@ -38,7 +38,7 @@ def main() -> None:
             population.repopulate(crossover_type, mutation_type, mutation_rate)
 
     #evolve
-    while population.current_generation < total_generations:
+    while population.current_generation <= total_generations:
 
         #run the players with multiprocessing
         with Pool(2) as pool:
