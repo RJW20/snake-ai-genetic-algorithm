@@ -11,8 +11,9 @@ class Player(Snake, BasePlayer):
 
     def __init__(self, **kwargs) -> None:
         super(Player, self).__init__(**kwargs)
-        self._fitness = 0
-        self._best_score = 0
+        self.score = 0
+        self.fitness = 0
+        self.best_score = 0
 
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""
@@ -49,6 +50,7 @@ class Player(Snake, BasePlayer):
         d['target'] = self.target
         d['vision'] = self.vision
 
+        d['score'] = self.score
         d['fitness'] = self.fitness
         d['best_score'] = self.best_score
         d['genome'] = self.genome
@@ -68,6 +70,7 @@ class Player(Snake, BasePlayer):
         self.target = d['target']
         self.vision = d['vision']
 
+        self.score = d['score']
         self.fitness = d['fitness']
         self.best_score = d['best_score']
         self.genome = d['genome']
