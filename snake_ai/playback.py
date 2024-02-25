@@ -9,7 +9,7 @@ from .settings import playback_settings
 
 
 ##bind settings to variables
-population_size = genetic_algorithm_settings['population_settings']
+population_size = genetic_algorithm_settings['population_size']
 total_generations = genetic_algorithm_settings['total_generations']
 history_folder = genetic_algorithm_settings['history_folder']
 history_type = genetic_algorithm_settings['history_type']
@@ -36,11 +36,20 @@ def playback() -> None:
     running = True
 
     #intialize the playback population
-    playback_pop = PlaybackPopulation(history_folder, history_type, history_value, population_size, player_args)
+    playback_pop = PlaybackPopulation(history_folder=history_folder, 
+                                      history_type=history_type,
+                                      history_value=history_value, 
+                                      og_pop_size=population_size,
+                                      total_generations=total_generations,
+                                      player_args=player_args)
+    
+    #select the first snakes
+    if playback_pop.is_champs:
+        snakes = [playback_pop.players[0]]
+    else:
+        snakes = playback_pop.players
 
     while running:
-
-        exit()
                 
         for event in pygame.event.get():
             if event.type == pygame.QUIT():
@@ -49,11 +58,22 @@ def playback() -> None:
 
             #handle key presses
             if event.type == pygame.KEYDOWN:
-                pass
+                if event.key == pygame.K_RIGHT:
+                    playback_pop.current_generation = min(playback_pop.current_generation + 1, total_generations)
+                elif event.key == pygame.K_LEFT:
+                    playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
 
-        #run the snakes
+                if playback_pop.is_champs:
+                    snakes = [playback_pop.players[playback_pop.current_generation]]
+                else:
+                    playback_pop.new_gen()
+                    snakes = playback_pop.players
+
+        #move all alive snakes
 
         #draw the snakes
+                    
+        #restart them if all are dead
 
     pygame.quit()
 
@@ -70,6 +90,7 @@ class PlaybackPopulation(Population):
                  history_type: str, 
                  history_value: int, 
                  og_pop_size: int, 
+                 total_generations: int,
                  player_args: dict
                  ) -> None:
         
@@ -83,7 +104,7 @@ class PlaybackPopulation(Population):
                 raise Exception('No history was saved during evolution. If you would like ' + \
                                 'to view playback, please adjust history settings and run again.')
             case('champ'):
-                pop_size = 1
+                pop_size = total_generations
                 self.is_champs = True
             case('absolute'):
                 pop_size = history_value
@@ -95,11 +116,14 @@ class PlaybackPopulation(Population):
         self.players = [Player(**player_args) for _ in range(pop_size)]
 
         if self.is_champs:
-            self.load(history_folder)
+            self.load(history_folder)   #load all champs
         else:
-            self.new_gen()
+            self.new_gen()              #load just the first gen
 
     def new_gen(self) -> None:
-        """Load generation {self.gen_id}."""
+        """Load generation {self.current_generation}.
+        
+        Change self.current_generation to the desired value before calling.
+        """
 
         self.load(f'{history_folder}/{self.current_generation}')
