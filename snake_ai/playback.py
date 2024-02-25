@@ -23,7 +23,7 @@ def playback() -> None:
     
     Do not alter settings.py between running the genetic algorithm and running this.
     Switch between generations with the left and right arrow keys.
-    Speed up or slow down the playback with the j and k keys.
+    Slow down up or speed up the playback with the j and k keys.
     """
 
     #initialize the grid the game will be modelled from
@@ -58,23 +58,27 @@ def playback() -> None:
 
             #handle key presses
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
 
-                    if event.key == pygame.K_RIGHT:
-                        playback_pop.current_generation = min(playback_pop.current_generation + 1, total_generations)
-                    else:
-                        playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
-
+                if event.key == pygame.K_RIGHT and playback_pop.current_generation != total_generations:
+                    playback_pop.current_generation = min(playback_pop.current_generation + 1, total_generations)
                     if not playback_pop.is_champs:
                         playback_pop.new_gen()
                     snakes = playback_pop.current_players
                     for snake in snakes:
                         snake.start_state()
-                
+                    
+                elif event.key == pygame.K_LEFT and playback_pop.current_generation != 1:
+                    playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
+                    if not playback_pop.is_champs:
+                        playback_pop.new_gen()
+                    snakes = playback_pop.current_players
+                    for snake in snakes:
+                        snake.start_state()
+
                 elif event.key == pygame.K_j:
-                    speed = speed * 2
-                elif event.key == pygame.K_k:
                     speed = speed / 2
+                elif event.key == pygame.K_k:
+                    speed = speed * 2
 
 
         #move all snakes
@@ -166,6 +170,6 @@ class PlaybackPopulation(Population):
         """Return the players we're currently playing back."""
 
         if self.is_champs:
-            return [self.players[self.current_generation]]
+            return [self.players[self.current_generation - 1]]
         else:
             return self.players
