@@ -58,17 +58,24 @@ def playback() -> None:
 
             #handle key presses
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    playback_pop.current_generation = min(playback_pop.current_generation + 1, total_generations)
-                elif event.key == pygame.K_LEFT:
-                    playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
 
-                if not playback_pop.is_champs:
-                    playback_pop.new_gen()
+                    if event.key == pygame.K_RIGHT:
+                        playback_pop.current_generation = min(playback_pop.current_generation + 1, total_generations)
+                    else:
+                        playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
 
-                snakes = playback_pop.current_players
-                for snake in snakes:
-                    snake.start_state()
+                    if not playback_pop.is_champs:
+                        playback_pop.new_gen()
+                    snakes = playback_pop.current_players
+                    for snake in snakes:
+                        snake.start_state()
+                
+                elif event.key == pygame.K_j:
+                    speed = speed * 2
+                elif event.key == pygame.K_k:
+                    speed = speed / 2
+
 
         #move all snakes
         for snake in snakes:
