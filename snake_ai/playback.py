@@ -33,6 +33,7 @@ def playback() -> None:
     screen = pygame.display.set_mode(grid.board_size)
     pygame.display.set_caption("Snake")
     clock = pygame.time.Clock()
+    speed = 5
     running = True
 
     #intialize the playback population
@@ -44,15 +45,14 @@ def playback() -> None:
                                       player_args=player_args)
     
     #select the first snakes
-    if playback_pop.is_champs:
-        snakes = [playback_pop.players[0]]
-    else:
-        snakes = playback_pop.players
+    snakes = playback_pop.current_players
+    for snake in snakes:
+        snake.start_state()
 
     while running:
                 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT():
+            if event.type == pygame.QUIT:
                 running = False
                 break
 
@@ -63,17 +63,43 @@ def playback() -> None:
                 elif event.key == pygame.K_LEFT:
                     playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
 
-                if playback_pop.is_champs:
-                    snakes = [playback_pop.players[playback_pop.current_generation]]
-                else:
+                if not playback_pop.is_champs:
                     playback_pop.new_gen()
-                    snakes = playback_pop.players
 
-        #move all alive snakes
+                snakes = playback_pop.current_players
+                for snake in snakes:
+                    snake.start_state()
 
-        #draw the snakes
-                    
+        #move all snakes
+        for snake in snakes:
+            snake.look()
+            move = snake.think()
+            snake.move(move)
+
+            #remove any that have died
+            if snake.is_dead:
+                snakes.remove(snake)
+
         #restart them if all are dead
+        if len(snakes) == 0:
+            snakes = playback_pop.current_players
+            for snake in snakes:
+                snake.start_state()
+
+        #fill the screen to wipe last frame
+        screen.fill((40,40,40))
+
+        #draw the snakes and their foods
+        for snake in snakes:
+            pygame.draw.rect(screen, 'red', pygame.Rect(grid.gridpoint_to_coordinates(snake.target.position), (grid.block_width, grid.block_width)))
+            for pos in snake.body:
+                pygame.draw.rect(screen, 'green', pygame.Rect(grid.gridpoint_to_coordinates(pos), (grid.block_width, grid.block_width)))
+                    
+        #display the changes
+        pygame.display.flip()
+        
+        #advance to next frame at chosen speed
+        clock.tick(speed) / 1000
 
     pygame.quit()
 
@@ -127,3 +153,12 @@ class PlaybackPopulation(Population):
         """
 
         self.load(f'{history_folder}/{self.current_generation}')
+
+    @property
+    def current_players(self) -> list[Player]:
+        """Return the players we're currently playing back."""
+
+        if self.is_champs:
+            return [self.players[self.current_generation]]
+        else:
+            return self.players

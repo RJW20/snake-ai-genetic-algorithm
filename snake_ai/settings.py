@@ -45,7 +45,7 @@ simulation_settings = {
 playback_settings = {
 
     #grid properties
-    'block_width': 20,
-    'block_padding': 1,
+    'block_width': 30,
+    'block_padding': 2,
 
 }
