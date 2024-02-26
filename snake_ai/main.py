@@ -42,7 +42,7 @@ def main() -> None:
 
         #run the players with multiprocessing
         with Pool(2) as pool:
-            population.players = pool.map(simulate, population.players, chunksize=1)
+            population.players = pool.map(simulate, population.players, chunksize=None)
 
         #print some stats
         print(f'\ngeneration: {population.current_generation}, champ\'s best score: {population.champ.best_score}, ' + 
