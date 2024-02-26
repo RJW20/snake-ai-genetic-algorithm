@@ -76,17 +76,17 @@ def playback() -> None:
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_RIGHT and playback_pop.current_generation != total_generations:
-                    playback_pop.current_generation = min(playback_pop.current_generation + 1, total_generations)
+                    playback_pop.current_generation += 1
                     if not playback_pop.is_champs:
-                        playback_pop.new_gen()
+                        playback_pop.new_gen(playback_pop.current_generation)
                     snakes = playback_pop.current_players
                     for snake in snakes:
                         snake.start_state()
                     
                 elif event.key == pygame.K_LEFT and playback_pop.current_generation != 1:
-                    playback_pop.current_generation = max(playback_pop.current_generation - 1, 1)
+                    playback_pop.current_generation -= 1
                     if not playback_pop.is_champs:
-                        playback_pop.new_gen()
+                        playback_pop.new_gen(playback_pop.current_generation)
                     snakes = playback_pop.current_players
                     for snake in snakes:
                         snake.start_state()
@@ -130,7 +130,7 @@ def playback() -> None:
         #generate the stats
         gen = font.render(f'Generation: {playback_pop.current_generation}', True, text_colour)
         gen_position = (15, 15)
-        score = font.render(f'{score_text}: {playback_pop.current_champ.score}', True, text_colour)
+        score = font.render(f'{score_text}: {max([snake.score for snake in snakes])}', True, text_colour)
         score_position = (15, 15 + 1.6*text_size)
         speed_font = font.render(f'Speed: {int(speed // 5)}x', True, text_colour)
         speed_position = (15, 15 + 2*1.6*text_size)
@@ -190,28 +190,20 @@ class PlaybackPopulation(Population):
         else:
             self.new_gen()              #load just the first gen
 
-    def new_gen(self) -> None:
-        """Load generation {self.current_generation}.
+    def new_gen(self, gen_id: int = 1) -> None:
+        """Load generation {gen_id}.
         
-        Change self.current_generation to the desired value before calling.
+        Sets self.current_generation to gen_id.
         """
 
-        self.load(f'{history_folder}/{self.current_generation}')
+        self.load(f'{history_folder}/{gen_id}')
+        self.current_generation = gen_id
 
     @property
     def current_players(self) -> list[Player]:
         """Return the players we're currently playing back."""
 
         if self.is_champs:
-            return [self.players[self.current_generation - 1]]
+            return self.players[self.current_generation - 1:self.current_generation]
         else:
-            return self.players
-        
-    @property
-    def current_champ(self) -> Player:
-        """Return the player being played back with the highest score."""
-
-        if self.is_champs:
-            return self.players[self.current_generation - 1]
-        else:
-            return max(self.players, key = lambda player: player.score)
+            return self.players[:]
