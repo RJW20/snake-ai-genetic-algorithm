@@ -30,11 +30,22 @@ def playback() -> None:
     grid = Grid(player_args['grid_size'], block_width, block_padding)
 
     #pygame setup
-    screen = pygame.display.set_mode(grid.board_size)
-    pygame.display.set_caption("Snake")
+    game_offset = (250, 0)
+    screen = pygame.display.set_mode((grid.board_size[0] + game_offset[0],
+                                     grid.board_size[1] + game_offset[1]))
+    pygame.display.set_caption("Snake: Genetic Algorithm Playback")
     clock = pygame.time.Clock()
     speed = 5
     running = True
+
+    #create a surface for the game
+    game = pygame.Surface((grid.board_size))
+
+    #initialize text for the stats
+    text_size = max(grid.board_size[1] // 35, 17)
+    text_colour = (190, 190, 190)
+    pygame.font.init()
+    font = pygame.font.Font(pygame.font.get_default_font(), text_size)
 
     #intialize the playback population
     playback_pop = PlaybackPopulation(history_folder=history_folder, 
@@ -44,10 +55,15 @@ def playback() -> None:
                                       total_generations=total_generations,
                                       player_args=player_args)
     
-    #select the first snakes
+    #get and start the first snakes
     snakes = playback_pop.current_players
     for snake in snakes:
         snake.start_state()
+
+    #the score text depends on whether we are just showing a champ or multiple
+    score_text = 'Score'
+    if len(snakes) != 1:    #if not showing just champ or history type and value result in just saving 1 per gen
+        score_text = 'Champ\'s ' + score_text
 
     while running:
                 
@@ -77,9 +93,9 @@ def playback() -> None:
 
                 elif event.key == pygame.K_j:
                     speed = speed / 2
+                    speed = max(speed, 5)
                 elif event.key == pygame.K_k:
                     speed = speed * 2
-
 
         #move all snakes
         for snake in snakes:
@@ -99,14 +115,31 @@ def playback() -> None:
 
         #fill the screen to wipe last frame
         screen.fill((40,40,40))
+        game.fill((40,40,40))
 
-        #draw the snakes and their foods
+        #line separating game from stats
+        width = 1
+        pygame.draw.line(screen, 'white', (game_offset[0] - width, game_offset[1]), (game_offset[0] - width, game_offset[1] + grid.board_size[1]), width = width)
+
+        #draw the snakes and their foods on the game
         for snake in snakes:
-            pygame.draw.rect(screen, 'red', pygame.Rect(grid.gridpoint_to_coordinates(snake.target.position), (grid.block_width, grid.block_width)))
+            pygame.draw.rect(game, 'red', pygame.Rect(grid.gridpoint_to_coordinates(snake.target.position), (grid.block_width, grid.block_width)))
             for pos in snake.body:
-                pygame.draw.rect(screen, 'green', pygame.Rect(grid.gridpoint_to_coordinates(pos), (grid.block_width, grid.block_width)))
+                pygame.draw.rect(game, 'green', pygame.Rect(grid.gridpoint_to_coordinates(pos), (grid.block_width, grid.block_width)))
                     
+        #generate the stats
+        gen = font.render(f'Generation: {playback_pop.current_generation}', True, text_colour)
+        gen_position = (15, 15)
+        score = font.render(f'{score_text}: {playback_pop.current_champ.score}', True, text_colour)
+        score_position = (15, 15 + 1.6*text_size)
+        speed_font = font.render(f'Speed: {int(speed // 5)}x', True, text_colour)
+        speed_position = (15, 15 + 2*1.6*text_size)
+
         #display the changes
+        screen.blit(game, game_offset)
+        screen.blit(gen, gen_position)
+        screen.blit(score, score_position)
+        screen.blit(speed_font, speed_position)
         pygame.display.flip()
         
         #advance to next frame at chosen speed
@@ -173,3 +206,12 @@ class PlaybackPopulation(Population):
             return [self.players[self.current_generation - 1]]
         else:
             return self.players
+        
+    @property
+    def current_champ(self) -> Player:
+        """Return the player being played back with the highest score."""
+
+        if self.is_champs:
+            return self.players[self.current_generation - 1]
+        else:
+            return max(self.players, key = lambda player: player.score)
