@@ -49,6 +49,7 @@ class Player(Snake, BasePlayer):
                search_position.x >= self.grid_size[0] or search_position.y >= self.grid_size[1]:
                 dist_to_wall = distance
                 wall_found = True
+                break
 
             if not food_found:
                 if search_position == self.target.position or (ordinal and search_position == phantom_food_position):  
@@ -75,7 +76,7 @@ class Player(Snake, BasePlayer):
         search_directions = rotations(forward_direction=self.direction)
         for i, slope in enumerate(search_directions):
             food_found, vision = self.look_in_direction(slope, food_found)
-            self.vision[:, i] = vision
+            self.vision[:, i] = vision.to_ndarray()
 
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""

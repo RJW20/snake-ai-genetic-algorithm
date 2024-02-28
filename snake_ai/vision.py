@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Generator
 
+import numpy as np
+
 from snake_app.cartesian import Slope, Direction
 
 
@@ -12,6 +14,9 @@ class Vision:
     food: float
     body: float
 
+    def to_ndarray(self) -> np.ndarray:
+        return np.array([self.wall, self.food, self.body])
+
 
 def rotations(forward_direction: Direction) -> Generator[Slope, None, None]:
     """Generator that yields the search directions in clockwise order around the 
@@ -20,6 +25,6 @@ def rotations(forward_direction: Direction) -> Generator[Slope, None, None]:
 
     slope = forward_direction.value
     for _ in range(4):
+        yield slope
         yield Slope(slope.run - slope.rise, slope.run + slope.rise)
         slope = Slope(-slope.rise, slope.run)
-        yield slope

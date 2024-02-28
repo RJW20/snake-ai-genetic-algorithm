@@ -4,7 +4,7 @@ player_args = {
     'grid_size': (10, 10),  #(width, height)
 
     #snake properties
-    'length': 3     #note will be set to min(grid_size)//2 if larger than that to prevent some of the body starting outside the grid
+    'start_length': 3     #note will be set to min(grid_size)//2 if larger than that to prevent some of the body starting outside the grid
 
 }
 
@@ -13,7 +13,7 @@ genetic_algorithm_settings = {
 
     #population properties
     'population_size': 1000,                    #number of players in the population
-    'creation_type': 'load',                     #options are ['new', 'load']
+    'creation_type': 'new',                     #options are ['new', 'load']
     'load_folder': 'latest_genomes',                          #folder to load from if applicable
     'parents_folder': 'latest_genomes',            #folder to save parents of each generation to (for use with repopulation, will be overwritten each time)
     'total_generations': 150,                   #number of generations to run for
