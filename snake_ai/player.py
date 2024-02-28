@@ -4,6 +4,8 @@ import numpy as np
 
 from snake_app import Snake
 from genetic_algorithm import BasePlayer
+from snake_app.cartesian import Point, Slope, Direction
+from .vision import Vision
 
 
 class Player(Snake, BasePlayer):
@@ -14,6 +16,19 @@ class Player(Snake, BasePlayer):
         self.score = 0
         self.fitness = 0
         self.best_score = 0
+        self.vision: np.ndarray = np.zeros(24)
+
+    def look_in_direction(self, direction: Slope) -> tuple[bool, Vision]:
+        """Return the distance to walls, food and own body in the given direction.
+        
+        Also return a bool indicating if food is in that direction so we know to stop searching for it.
+        """
+
+    def look(self) -> None:
+        """Set the snakes vision.
+        
+        Can see in 8 directions around the snake (cardinal and ordinal compass points).
+        """
 
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""
