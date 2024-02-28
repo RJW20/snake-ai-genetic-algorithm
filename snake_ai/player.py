@@ -80,7 +80,7 @@ class Player(Snake, BasePlayer):
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""
 
-        genome_input = np.reshape(np.reciprocal(self.vision), 24)
+        genome_input = np.reshape(np.reciprocal(self.vision), 24)    #use 1/sight as normalisation 
         genome_output = self.genome.propagate(genome_input)
 
         #turn output into move
