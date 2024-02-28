@@ -14,7 +14,7 @@ numpy = "^1.26.4"
 
 [package.source]
 type = "directory"
-url = "../genetic_algorithm_template"
+url = "genetic_algorithm_template"
 
 [[package]]
 name = "numpy"
@@ -137,14 +137,13 @@ files = []
 develop = true
 
 [package.dependencies]
-numpy = "^1.26.4"
 pygame = "^2.5.2"
 
 [package.source]
 type = "directory"
-url = "../snake_app"
+url = "snake_app"
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "e8b0afb59c697b40926fc160b6e9c47a74e7e812df8cad2b6840228ab50df2c3"
+content-hash = "7fc364d9f06c64ed17268327dcc881804f184a44a230d235e896d2f6a2aa389a"
