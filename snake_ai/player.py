@@ -5,7 +5,7 @@ import numpy as np
 from snake_app import Snake
 from genetic_algorithm import BasePlayer
 from snake_app.cartesian import Point, Slope, Direction
-from .vision import Vision
+from .vision import Vision, rotations
 
 
 class Player(Snake, BasePlayer):
@@ -16,13 +16,53 @@ class Player(Snake, BasePlayer):
         self.score = 0
         self.fitness = 0
         self.best_score = 0
-        self.vision: np.ndarray = np.zeros(24)
+        self.vision: np.ndarray = np.full((3, 8), np.inf)
 
-    def look_in_direction(self, direction: Slope) -> tuple[bool, Vision]:
-        """Return the distance to walls, food and own body in the given direction.
+    def look_in_direction(self, slope: Slope, food_found: bool) -> tuple[bool, Vision]:
+        """Return the distance to walls, food and (first occurence of, if applicable) own body in the given
+        slope direction.
         
-        Also return a bool indicating if food is in that direction so we know to stop searching for it.
+        Also return a boolean indicating if food is in that direction so we know to stop searching for it, 
+        and recieve the same booleam so we know whether to search for it in this direction.
         """
+
+        dist_to_wall = None
+        dist_to_food = np.inf       #sight will be infinite if snake can't see it
+        dist_to_body = np.inf       #" "
+        wall_found = False
+        body_found = False
+
+        search_position = self.body[0] + slope      #can't start by looking at the head
+        distance = 1
+
+        #if we are looking on a diagonal we also observe food in the space next to the food in the direction the snake is
+        #heading - this allows the snake to track down food on the diagonals.
+        ordinal = False
+        if abs(slope.run) + abs(slope.rise) == 2:
+            ordinal = True
+            phantom_food_position = self.target.position + self.direction.value
+
+        #look until at the wall
+        while not wall_found:
+
+            if search_position.x < 0 or search_position.y < 0 or \
+               search_position.x >= self.grid_size[0] or search_position.y >= self.grid_size[1]:
+                dist_to_wall = distance
+                wall_found = True
+
+            if not food_found:
+                if search_position == self.target.position or (ordinal and search_position == phantom_food_position):  
+                    dist_to_food = distance
+                    food_found = True
+
+            if not body_found and search_position in self.body:
+                dist_to_body = distance
+                body_found = True
+
+            search_position = search_position + slope
+            distance += 1
+
+        return food_found, Vision(dist_to_wall, dist_to_food, dist_to_body)
 
     def look(self) -> None:
         """Set the snakes vision.
@@ -30,12 +70,17 @@ class Player(Snake, BasePlayer):
         Can see in 8 directions around the snake (cardinal and ordinal compass points).
         """
 
+        food_found = False
+
+        search_directions = rotations(forward_direction=self.direction)
+        for i, slope in enumerate(search_directions):
+            food_found, vision = self.look_in_direction(slope, food_found)
+            self.vision[:, i] = vision
+
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""
 
-        genome_input = np.concatenate((np.array([1.0/distance for _, distance in vars(self.vision.walls).items()]),
-                                       np.array([1.0/distance for _, distance in vars(self.vision.food).items()]),
-                                       np.array([1.0/distance for _, distance in vars(self.vision.body).items()])))
+        genome_input = np.reshape(np.reciprocal(self.vision), 24)
         genome_output = self.genome.propagate(genome_input)
 
         #turn output into move
@@ -48,47 +93,6 @@ class Player(Snake, BasePlayer):
                 move = 'left'
         
         return move
-    
-    def __getstate__(self) -> dict:
-        """Return a dictionary containing attribute names and their values as (key, value) pairs.
-        
-        All values must also be pickleable i.e. not use __slots__ or have __getstate__ and __setstate__ methods like this.
-        If this class uses __slots__ or extends one that does this must be changed.
-        """
-
-        d = dict()
-
-        d['grid_size'] = self.grid_size
-        d['start_length'] = self.start_length
-        d['body'] = self.body
-        d['direcion'] = self.direction
-        d['target'] = self.target
-        d['vision'] = self.vision
-
-        d['score'] = self.score
-        d['fitness'] = self.fitness
-        d['best_score'] = self.best_score
-        d['genome'] = self.genome
-
-        return d
-
-    def __setstate__(self, d: dict) -> BasePlayer:
-        """Load the attributes in the dictionary d into self.
-        
-        If this class uses __slots__ or extends one that does this must be changed.
-        """
-
-        self.grid_size = d['grid_size']
-        self.start_length = d['start_length']
-        self.body = d['body']
-        self.direction = d['direcion']
-        self.target = d['target']
-        self.vision = d['vision']
-
-        self.score = d['score']
-        self.fitness = d['fitness']
-        self.best_score = d['best_score']
-        self.genome = d['genome']
 
     def empty_clone(self) -> BasePlayer:
         """Return a new instance of self's class without a genome."""
