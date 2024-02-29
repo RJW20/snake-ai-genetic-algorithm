@@ -61,7 +61,7 @@ def simulate(player: Player) -> Player:
             current_score = player.score
         
         #restart if needed
-        M = max(6, min(player.length, longest_edge))   #variable for determining progress     
+        M = max(6, min(player.score + player.start_length, longest_edge))   #variable for determining progress     
         if player.is_dead or time_since_eaten == M * longest_edge:
             deaths += 1
             best_score = max(best_score, player.score)

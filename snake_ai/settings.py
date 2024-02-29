@@ -16,7 +16,7 @@ genetic_algorithm_settings = {
     'creation_type': 'new',                     #options are ['new', 'load']
     'load_folder': 'latest_genomes',                          #folder to load from if applicable
     'parents_folder': 'latest_genomes',            #folder to save parents of each generation to (for use with repopulation, will be overwritten each time)
-    'total_generations': 150,                   #number of generations to run for
+    'total_generations': 500,                   #number of generations to run for
 
     #history properties
     'history_folder': 'history',            #folder to permanently save the best of each generation too
@@ -37,7 +37,7 @@ genetic_algorithm_settings = {
 
 simulation_settings = {
 
-    'lifespan': 5,
+    'lifespan': 1,
 
 }
 
@@ -45,7 +45,7 @@ simulation_settings = {
 playback_settings = {
 
     #grid properties
-    'block_width': 10,
-    'block_padding': 1,
+    'block_width': 20,
+    'block_padding': 2,
 
 }
