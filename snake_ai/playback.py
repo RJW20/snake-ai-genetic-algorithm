@@ -31,17 +31,17 @@ def playback() -> None:
 
     #pygame setup
     game_offset = (250, 0)
-    screen = pygame.display.set_mode((grid.board_size[0] + game_offset[0],
-                                     grid.board_size[1] + game_offset[1]))
+    screen = pygame.display.set_mode((grid.screen_size[0] + game_offset[0],
+                                     grid.screen_size[1] + game_offset[1]))
     pygame.display.set_caption("Snake: Genetic Algorithm Playback")
     clock = pygame.time.Clock()
     running = True
 
     #create a surface for the game
-    game = pygame.Surface((grid.board_size))
+    game = pygame.Surface((grid.screen_size))
 
     #initialize text for the stats
-    text_size = max(grid.board_size[1] // 35, 17)
+    text_size = max(grid.screen_size[1] // 35, 17)
     text_colour = (190, 190, 190)
     pygame.font.init()
     font = pygame.font.Font(pygame.font.get_default_font(), text_size)
@@ -120,7 +120,7 @@ def playback() -> None:
 
         #line separating game from stats
         width = 1
-        pygame.draw.line(screen, 'white', (game_offset[0] - width, game_offset[1]), (game_offset[0] - width, game_offset[1] + grid.board_size[1]), width = width)
+        pygame.draw.line(screen, 'white', (game_offset[0] - width, game_offset[1]), (game_offset[0] - width, game_offset[1] + grid.screen_size[1]), width = width)
 
         #draw the snakes and their foods on the game
         for snake in snakes:
