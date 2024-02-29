@@ -4,8 +4,8 @@ import numpy as np
 
 from snake_app import Snake
 from genetic_algorithm import BasePlayer
-from snake_app.cartesian import Point, Slope, Direction
-from .vision import Vision, rotations
+from snake_app.cartesian import Slope, Direction
+from .vision import Vision, rotations, relative_direction
 
 
 class Player(Snake, BasePlayer):
@@ -17,6 +17,7 @@ class Player(Snake, BasePlayer):
         self.fitness = 0
         self.best_score = 0
         self.vision: np.ndarray = np.full((3, 8), np.inf)
+        self.tail_direction: Direction
 
     def look_in_direction(self, slope: Slope, food_found: bool) -> tuple[bool, Vision]:
         """Return the distance to walls, food and (first occurence of, if applicable) own body in the given
@@ -66,22 +67,25 @@ class Player(Snake, BasePlayer):
         return food_found, Vision(dist_to_wall, dist_to_food, dist_to_body)
 
     def look(self) -> None:
-        """Set the snakes vision.
+        """Set the snakes vision and tail direction.
         
         Can see in 8 directions around the snake (cardinal and ordinal compass points).
         """
 
         food_found = False
-
         search_directions = rotations(forward_direction=self.direction)
         for i, slope in enumerate(search_directions):
             food_found, vision = self.look_in_direction(slope, food_found)
             self.vision[:, i] = vision.to_ndarray()
 
+        self.tail_direction = Direction(self.body[-2] - self.body[-1])
+
     def think(self) -> str:
         """Feed the input into the Genome and turn the output into a valid move."""
 
-        genome_input = np.reshape(np.reciprocal(self.vision), 24)    #use 1/sight as normalisation 
+        vision_input = np.reshape(np.reciprocal(self.vision), 24)    #use 1/sight as normalisation
+        one_not_tail_input = relative_direction(self.direction, self.tail_direction)
+        genome_input = np.concatenate(vision_input, one_not_tail_input)
         genome_output = self.genome.propagate(genome_input)
 
         #turn output into move
