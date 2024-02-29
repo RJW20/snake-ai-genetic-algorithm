@@ -35,7 +35,6 @@ def playback() -> None:
                                      grid.board_size[1] + game_offset[1]))
     pygame.display.set_caption("Snake: Genetic Algorithm Playback")
     clock = pygame.time.Clock()
-    speed = 5
     running = True
 
     #create a surface for the game
@@ -59,6 +58,9 @@ def playback() -> None:
     snakes = playback_pop.current_players
     for snake in snakes:
         snake.start_state()
+
+    base_speed = grid.size[0] / 4
+    speed_multiplier = 1
 
     #the score text depends on whether we are just showing a champ or multiple
     score_text = 'Score'
@@ -92,10 +94,9 @@ def playback() -> None:
                         snake.start_state()
 
                 elif event.key == pygame.K_j:
-                    speed = speed / 2
-                    speed = max(speed, 5)
+                    speed_multiplier = max(1, speed_multiplier // 2)
                 elif event.key == pygame.K_k:
-                    speed = speed * 2
+                    speed_multiplier *= 2
 
         #move all snakes
         for snake in snakes:
@@ -132,18 +133,18 @@ def playback() -> None:
         gen_position = (15, 15)
         score = font.render(f'{score_text}: {max([snake.score for snake in snakes])}', True, text_colour)
         score_position = (15, 15 + 1.6*text_size)
-        speed_font = font.render(f'Speed: {int(speed // 5)}x', True, text_colour)
+        speed = font.render(f'Speed: {speed_multiplier}x', True, text_colour)
         speed_position = (15, 15 + 2*1.6*text_size)
 
         #display the changes
         screen.blit(game, game_offset)
         screen.blit(gen, gen_position)
         screen.blit(score, score_position)
-        screen.blit(speed_font, speed_position)
+        screen.blit(speed, speed_position)
         pygame.display.flip()
         
         #advance to next frame at chosen speed
-        clock.tick(speed) / 1000
+        clock.tick(base_speed * speed_multiplier) / 1000
 
     pygame.quit()
 
