@@ -1,6 +1,6 @@
 # Genome saves
-latest_genomes/
-history/
+latest_genomes*
+history*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
