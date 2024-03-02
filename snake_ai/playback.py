@@ -169,7 +169,6 @@ class PlaybackPopulation(Population):
         self.current_generation = 1
 
         self.is_champs = False
-        pop_size = og_pop_size
         match(history_type):
             case('none'):
                 raise Exception('No history was saved during evolution. If you would like ' + \
@@ -181,6 +180,8 @@ class PlaybackPopulation(Population):
                 pop_size = history_value
             case('percentage'):
                 pop_size = int(og_pop_size * history_value)
+            case('entire'):
+                pop_size = og_pop_size
             case _:
                 raise Exception(f'Invalid history type {history_type}')
         self.size = pop_size
