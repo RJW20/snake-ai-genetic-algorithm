@@ -84,8 +84,8 @@ class Player(Snake, BasePlayer):
         """Feed the input into the Genome and turn the output into a valid move."""
 
         vision_input = np.reshape(np.reciprocal(self.vision), 24)    #use 1/sight as normalisation
-        one_not_tail_input = relative_direction(self.direction, self.tail_direction)
-        genome_input = np.concatenate(vision_input, one_not_tail_input)
+        one_hot_tail_input = relative_direction(self.direction, self.tail_direction)
+        genome_input = np.concatenate((vision_input, one_hot_tail_input))
         genome_output = self.genome.propagate(genome_input)
 
         #turn output into move
