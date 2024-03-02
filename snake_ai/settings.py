@@ -24,7 +24,7 @@ genetic_algorithm_settings = {
     'history_value': 0,                     #dependent on history_type: 'absolute' -> int: number to save, 'percentage' -> float: percentage to save 
 
     #genome properties
-    'structure': ((28, ), (14, 'relu'), (7, 'relu') (3, 'softmax')),    #options for activation are ['sigmoid', 'relu', 'softmax', 'linear']
+    'structure': ((28, ), (14, 'relu'), (7, 'relu'), (3, 'softmax')),    #options for activation are ['sigmoid', 'relu', 'softmax', 'linear']
 
     #evolution properties
     'parent_percentage': 0.2,       #percentage of parents to repopulate the next generation from
