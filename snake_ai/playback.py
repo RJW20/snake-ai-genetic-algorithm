@@ -59,7 +59,7 @@ def playback() -> None:
     for snake in snakes:
         snake.start_state()
 
-    base_speed = grid.size[0] / 4
+    base_speed = 5
     speed_multiplier = 1
 
     #the score text depends on whether we are just showing a champ or multiple
