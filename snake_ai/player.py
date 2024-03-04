@@ -24,7 +24,7 @@ class Player(Snake, BasePlayer):
         slope direction.
         
         Also return a boolean indicating if food is in that direction so we know to stop searching for it, 
-        and recieve the same booleam so we know whether to search for it in this direction.
+        and recieve the same boolean so we know whether to search for it in this direction.
         """
 
         dist_to_wall = None
