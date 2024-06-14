@@ -1,4 +1,4 @@
-# Snake Ai: Genetic Algorithm
+# Snake AI: Genetic Algorithm
 Application of the Genetic Algorithm to the game Snake.
 
 ## Basic Requirements
